@@ -1,0 +1,1 @@
+web: gunicorn hitai.wsgi --log-file -
