@@ -1163,13 +1163,13 @@ class VideoCamera(object):
 		# 	cv2.rectangle(image, pt1=(x, y), pt2=(x + w, y + h), color=(255, 0, 0), thickness=2)
 		frame_flip = cv2.flip(image,1)
 
-		# faces_detected = detect_faces(frame_flip)
+		faces_detected = detect_faces(frame_flip)
 
-		# labels = list(faces_detected)
+		labels = list(faces_detected)
 
-		# for index, value in enumerate(labels):
-		# 	points = faces_detected[value]['facial_area']
-		# 	frame_flip = cv2.rectangle(frame_flip, (points[0], points[1]), (points[2], points[3]), (255, 0, 0), 2)
+		for index, value in enumerate(labels):
+			points = faces_detected[value]['facial_area']
+			frame_flip = cv2.rectangle(frame_flip, (points[0], points[1]), (points[2], points[3]), (255, 0, 0), 2)
 
 		ret, jpeg = cv2.imencode('.jpg', frame_flip)
 		return jpeg.tobytes()
