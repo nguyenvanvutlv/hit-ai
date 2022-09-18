@@ -1,0 +1,45 @@
+<html>
+
+<head>
+  <title>Video Live Stream</title>
+</head>
+
+<style>
+  body {
+    display: grid;
+    place-content: center;
+    margin: 0;
+    min-height: 100vh;
+    background: #f0f0f0;
+  }
+
+  /* video {
+  opacity: 0;
+} */
+
+  video,
+  canvas {
+    background: #fff;
+    object-fit: cover;
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    border-radius: 50%;
+    box-shadow: 0 0 100px -50px #000;
+  }
+  img{
+    border-radius:50px;
+  }
+</style>
+
+<body>
+  <!-- <h1>Video Live Stream</h1> -->
+    <img src="{% url 'video_feed' %}">
+
+</body>
+
+</html>
