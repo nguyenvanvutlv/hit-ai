@@ -563,6 +563,7 @@ def verify(img1_path, img2_path=None, distance_metric = 'cosine', model = None, 
 				#decision
 
 				threshold = dst.findThreshold(j)
+				#threshold = 0.4
 
 				if distance <= threshold:
 					identified = True
@@ -664,7 +665,7 @@ def verify_database(img_path, distance_metric = 'cosine', model = None, detector
 			#decision
 
 			threshold = dst.findThreshold(distance_metric)
-
+			#threshold = 0.4
 			if distance <= threshold:
 				resp_obj = {
 					"label": label
