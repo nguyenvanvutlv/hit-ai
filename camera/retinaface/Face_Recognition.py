@@ -636,7 +636,7 @@ def verify_database(img_path, distance_metric = 'cosine', model = None, detector
 		return None
 
 	resp_objects = []
-	with open('database.txt', 'r') as f:
+	with open('static/database.txt', 'r') as f:
 		while True:
 			line = f.readline()
 
