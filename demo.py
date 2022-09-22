@@ -3,7 +3,7 @@ import imutils
 import cv2, os, urllib.request
 import numpy as np
 from insightface.app import FaceAnalysis
-from camera.retinaface.commons import distance as dst
+from retinaface.commons import distance as dst
 from deepface import DeepFace
 from deepface.basemodels import ArcFace
 
@@ -32,13 +32,12 @@ def draw_border(img, pt1, pt2, color, thickness, r, d):
     cv2.line(img, (x2, y2 - r), (x2, y2 - r - d), color, thickness)
     cv2.ellipse(img, (x2 - r, y2 - r), (r, r), 0, 0, 90, color, thickness)
     
-    
-def verify_database(embedding1, region, distance_metric = 'cosine'):
+# đường dẫn database -> img/source/database.txt
+def verify_database(embedding1, region, distance_metric = 'cosine', database = 'img/source/database.txt'):
     resp_objects = []
-    with open('img/source/database.txt', 'r') as f:
+    with open(database, 'r') as f:
         while True:
             line = f.readline()
-            
             if not line:
                 break
             line = line.split()
