@@ -71,38 +71,40 @@ def verify_database(embedding1, region, distance_metric = 'cosine', database = '
     
     return min(resp_objects, key=lambda x: x['distance'])
 
-
+# ------------ SETUP CAM ------------#
 video = cv2.VideoCapture(0)
 frame_width = int(video.get(3))
 frame_height = int(video.get(4)) 
 app = FaceAnalysis(name = 'buffalo_sc')
 app.prepare(ctx_id=0, det_size=(640, 640))
 model_arc = ArcFace.loadModel()
+# ------------ SETUP CAM ------------#
+
 
 while True:
     success, image = video.read()
     frame_flip = cv2.flip(image, 1)
     faces = app.get(frame_flip)
     for index, value in enumerate(faces):
+        
             points = value['bbox'].astype(np.int)
-            result = None
-            # try:
-            #     embedding = DeepFace.represent(img_path = frame_flip, model_name = 'ArcFace', model = self.model_arc, enforce_detection = False)
-            #     
-            # except:
-            #     print()
+
+            # ------------EMBEDDING---------------#
+            result = None            
             copy_frame = frame_flip.copy()
             copy_frame = copy_frame[points[1]: points[3], points[0]: points[2]]
-            # print("---------------1\n")
             result = DeepFace.represent(img_path = copy_frame, model_name = 'ArcFace', model = model_arc, enforce_detection = False)
             result = verify_database(result, points)
-
+            # ------------EMBEDDING---------------#
             
+            
+            # ----------------DRAW----------------#
             label = "Unknown" if result == None else result['label']
-                       
             draw_border(frame_flip, (points[0], points[1]), (points[2], points[3]), (0, 255, 0), 3, 10, 20)
-            
             cv2.putText(frame_flip, label, (points[0], points[1]), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
+            # ----------------DRAW----------------#
+            
+            
     cv2.imshow("a", frame_flip)
     if cv2.waitKey(1) & 0xFF == ord('x'):
         break
