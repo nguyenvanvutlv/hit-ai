@@ -1,6 +1,6 @@
 # hit-ai
 
-![image](img/out.gif)
+![image](img/_out.gif)
 
 
 # Setup environment
