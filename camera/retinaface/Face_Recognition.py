@@ -431,7 +431,7 @@ def represent(img_path, model = None, detector_backend = None, enforce_detection
 		, enforce_detection = enforce_detection
 		, align = align
 		, return_facial_area=True)
-
+	
 	if type(img) != np.ndarray and img == None:
 		return None, None
 

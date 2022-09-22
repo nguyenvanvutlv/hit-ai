@@ -1,13 +1,9 @@
 from pathlib import Path
-from imutils.video import VideoStream
 import imutils
 import cv2, os, urllib.request
 import numpy as np
-from django.conf import settings
-from camera.models import Image
 from insightface.app import FaceAnalysis
-from .retinaface.model import arcface
-from .retinaface.commons import distance as dst
+from camera.retinaface.commons import distance as dst
 from deepface import DeepFace
 from deepface.basemodels import ArcFace
 
@@ -36,7 +32,7 @@ def draw_border(img, pt1, pt2, color, thickness, r, d):
     cv2.line(img, (x2, y2 - r), (x2, y2 - r - d), color, thickness)
     cv2.ellipse(img, (x2 - r, y2 - r), (r, r), 0, 0, 90, color, thickness)
     
-
+    
 def verify_database(embedding1, region, distance_metric = 'cosine'):
     resp_objects = []
     with open('img/source/database.txt', 'r') as f:
@@ -58,7 +54,7 @@ def verify_database(embedding1, region, distance_metric = 'cosine'):
                 raise ValueError("Invalid distance_metric passed - ", distance_metric)
             
             distance = np.float64(distance) #causes trobule for euclideans in api calls if this is not set (issue #175)
-            print(distance)
+            # print(distance)
             threshold = dst.findThreshold(distance_metric)
             # print(threshold)
             
@@ -77,25 +73,18 @@ def verify_database(embedding1, region, distance_metric = 'cosine'):
     return min(resp_objects, key=lambda x: x['distance'])
 
 
-class VideoCamera(object):
-    def __init__(self):
-        # self.person = cv2.imread("img/main.jpg")
-        self.video = cv2.VideoCapture(0)
-        frame_width = int(self.video.get(3))
-        frame_height = int(self.video.get(4))  
-        self.app = FaceAnalysis(name = 'buffalo_sc')
-        self.app.prepare(ctx_id=0, det_size=(640, 640))
-        self.model_arc = ArcFace.loadModel()
-        
-        
-    def __del__(self):
-        self.video.release()
-    
-    def get_frame(self):
-        success, image = self.video.read()
-        frame_flip = cv2.flip(image, 1)
-        faces = self.app.get(frame_flip)
-        for index, value in enumerate(faces):
+video = cv2.VideoCapture(0)
+frame_width = int(video.get(3))
+frame_height = int(video.get(4)) 
+app = FaceAnalysis(name = 'buffalo_sc')
+app.prepare(ctx_id=0, det_size=(640, 640))
+model_arc = ArcFace.loadModel()
+
+while True:
+    success, image = video.read()
+    frame_flip = cv2.flip(image, 1)
+    faces = app.get(frame_flip)
+    for index, value in enumerate(faces):
             points = value['bbox'].astype(np.int)
             result = None
             # try:
@@ -105,7 +94,8 @@ class VideoCamera(object):
             #     print()
             copy_frame = frame_flip.copy()
             copy_frame = copy_frame[points[1]: points[3], points[0]: points[2]]
-            result = DeepFace.represent(img_path = copy_frame, model_name = 'ArcFace', model = self.model_arc, enforce_detection = False)
+            # print("---------------1\n")
+            result = DeepFace.represent(img_path = copy_frame, model_name = 'ArcFace', model = model_arc, enforce_detection = False)
             result = verify_database(result, points)
 
             
@@ -114,6 +104,8 @@ class VideoCamera(object):
             draw_border(frame_flip, (points[0], points[1]), (points[2], points[3]), (0, 255, 0), 3, 10, 20)
             
             cv2.putText(frame_flip, label, (points[0], points[1]), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
-        ret, jpeg = cv2.imencode('.jpg', frame_flip)
-        
-        return jpeg.tobytes()
+    cv2.imshow("a", frame_flip)
+    if cv2.waitKey(1) & 0xFF == ord('x'):
+        break
+video.release()
+cv2.destroyAllWindows()

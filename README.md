@@ -16,7 +16,13 @@
 
 # Run web
 
+
+
+
 ```
+(py3)$ python3 manage.py makemigrations
+
+(py3)$ python3 manage.py migrate
 
 (py3)$ python3 manage.py runserver
 
