@@ -6,7 +6,7 @@ link file exe demo on Window:
 [Retinaface.exe](https://drive.google.com/file/d/1tTSMEQNUtrtevgIp1eUnW86ljEhhyamX/view?usp=sharing)
 
 
-![image](img/demo.gif)
+![image](img/_demo.gif)
 
 
 # Setup environment
